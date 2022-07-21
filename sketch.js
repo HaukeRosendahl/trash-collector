@@ -10,12 +10,28 @@ let gameOver = false;
 let stars = [];
 // Liste der Asteroiden
 const asteroids = [];
+const asteroids2 = []; ////////
+const asteroids3 = [];
+const asteroids4 = [];
+const asteroids5 = [];
+
+// Geschwindigkeit asteroids
+let speed = 0.7;
+let rota = 0;
+
 // Liste der abgefeuerten Laser
 let lasers = [];
 let explosions = [];
 
+// scoreboard
+let score = 0;
+
 let spaceshipImg;
-let asteroidImg;
+let asteroidImg1;
+let asteroidImg2; /////////
+let asteroidImg3;
+let asteroidImg4;
+let asteroidImg5;
 let laserImg;
 const shotImg = [];
 const explosionImg = [];
@@ -27,9 +43,13 @@ this.focus();
 
 // Bilder
 function preload() {
+  spaceshipImg = loadImage('spaceship.png');
   laserImg = loadImage(' shot.png');
-  asteroidImg = loadImage('asteroid.png');
-  
+  asteroidImg1 = loadImage('asteroid1.png');
+  asteroidImg2 = loadImage('asteroid2.png');
+  asteroidImg3 = loadImage('asteroid3.png'); //////////
+  asteroidImg4 = loadImage('asteroid4.png');
+  asteroidImg5 = loadImage('asteroid5.png');
   
   for (let i = 1; i <= 10; i++) {
     explosionImg.push(loadImage('shot6_exp' + i.toString() + '.png')); 
@@ -42,24 +62,38 @@ function setup() {
 }
 
 function draw() {
-  background(20,20,30);
+  background(20,20,30);   
+
+  rota = rota + 0.02;
+  fill(255, 0, 50);
+  textSize(20);
+  text('Score:', 30, 30);
+  text(score, 95, 30)
 
   if (gameOver) {
     textSize(40);
     textAlign(CENTER, CENTER)
-    fill('white');
+    fill(255, 0, 50);
     text('GAME OVER', width / 2, height / 2);
     return;
   }
   
   drawStars();
   drawAsteroids(); 
+  drawAsteroids2(); //////
+  drawAsteroids3();
+  drawAsteroids4();
+  drawAsteroids5();
   drawLasers();
   drawSpaceship(); 
   drawExplosions();
   
 
   detectCollisions();
+  detectCollisions2(); ////////
+  detectCollisions3();
+  detectCollisions4();
+  detectCollisions5();
 
   // draw Spaceship
   push();
@@ -72,24 +106,7 @@ function draw() {
   fill(255, 80, 0);
   ellipse(0, 0 + random(35, 55), 15, 55); 
 
-  stroke(30);
-  
-  fill(255, 0, 50);
-  arc(0, 0 + 36, 40, 40, PI, 0, CHORD);
- 
-  fill(255, 255, 255);
-  ellipse(0, 0, 30, 80);
- 
-  fill(100, 200, 255);
-  ellipse(0, 0 - 12, 15, 15);
-  
- 
-  fill(255, 0, 50);
-  ellipse(0, 0 + 32, 5, 30);
-
-  triangle(0-1.5, 0-39, 0+1.5, 0-39, 0, 0-60);
-
-  triangle(0-5, 0-38, 0+5, 0-38, 0, 0-45);
+  image(spaceshipImg, -36, -66, 74, 120);
 
   pop();
   //
@@ -98,24 +115,6 @@ function draw() {
 }
 
 
-// Asteoriden
-function drawAsteroids() {
-  // neue Asteroiden generieren
-  if (frameCount % 120 === 0) {
-    asteroids.push({ x: random(0, width), y: 0, size: 50 });
-  }
-  
-  // Asteroiden zeichnen
-  for (let i = 0; i < asteroids.length; i++) {
-    push();
-    translate(asteroids[i].x, asteroids[i].y)
-    image(asteroidImg, asteroids[i].size / -2, asteroids[i].size / -2, asteroids[i].size, asteroids[i].size);
-    pop();
-    
-    asteroids[i].y++;
-    asteroids[i].size += 0.05;
-  }
-}
 
 // Laser
 function keyPressed() {
@@ -143,20 +142,38 @@ function drawLasers() {
   lasers = lasers.filter(l => l.x >= 0 && l.x <= width && l.y >= 0 && l.y <= height);
 }
 
-// Spaceship
-function drawSpaceship() {
-  // links und rechts bewegen
-  if (keyIsDown(LEFT_ARROW) && spaceshipX >= 2) {
-    spaceshipX -= 6;
-  } else if (keyIsDown(RIGHT_ARROW) && spaceshipX <= width - 2) {
-    spaceshipX += 6;
+
+
+
+
+
+
+
+
+
+
+// Asteoriden
+function drawAsteroids() {
+  // neue Asteroiden generieren
+  if (frameCount % 435 === 0) {
+    asteroids.push({ x: random(0, width), y: 0, size: 50 });
   }
   
-  // rotieren
-  if (keyIsDown(81)) {
-    rotation -= 0.05;
-  } else if (keyIsDown(69)) {
-    rotation += 0.05;
+  // Asteroiden zeichnen
+  for (let i = 0; i < asteroids.length; i++) {
+    push();
+    translate(asteroids[i].x, asteroids[i].y) 
+    rotate(rota+0.01);
+    image(asteroidImg1, asteroids[i].size / -2, asteroids[i].size / -2, asteroids[i].size, asteroids[i].size);
+    pop();
+    
+    asteroids[i].y += speed;
+    asteroids[i].size += 0.05;
+
+    if (asteroids[i].y > height + 30) {
+      gameOver = true;
+    }
+    
   }
 }
 
@@ -177,6 +194,8 @@ function detectCollisions() {
             asteroids[a].size)) {
           asteroidCollisions.push({ laserIndex: l, asteroidIndex: a });
           explosions.push({ x: lasers[l].x, y: lasers[l].y, duration: 0 });
+
+          score = score + 70;
       }
     }
   }
@@ -199,6 +218,302 @@ function detectCollisions() {
   }
 }
 
+// Asteoriden22222 /////////////
+function drawAsteroids2() {
+  // neue Asteroiden generieren
+  if (frameCount % 200 === 0) {
+    asteroids2.push({ x: random(0, width), y: 0, size: 50 });
+  }
+  
+  // Asteroiden zeichnen
+  for (let i = 0; i < asteroids2.length; i++) {
+    push();
+    translate(asteroids2[i].x, asteroids2[i].y)
+    rotate(rota);
+    image(asteroidImg2, asteroids2[i].size / -2, asteroids2[i].size / -2, asteroids2[i].size, asteroids2[i].size);
+    pop();
+    
+    asteroids2[i].y += speed;;
+    asteroids2[i].size += 0.05;
+   
+    if (asteroids2[i].y > height + 30) {
+      gameOver = true;
+    }
+  }
+}
+
+// Kollisionen22222 //////////
+function detectCollisions2() {
+  // Kollisionen von Asteroiden mit Lasern
+  let asteroid2Collisions = [];
+  
+  for (let l = 0; l < lasers.length; l++) {
+    for (let a = 0; a < asteroids2.length; a++) {
+      if (collideRectCircle(
+            lasers[l].x - 2, 
+            lasers[l].y - 20, 
+            4, 
+            20, 
+            asteroids2[a].x, 
+            asteroids2[a].y, 
+            asteroids2[a].size)) {
+          asteroid2Collisions.push({ laserIndex: l, asteroid2Index: a });
+          explosions.push({ x: lasers[l].x, y: lasers[l].y, duration: 0 });
+
+          score = score + 8;
+      }
+    }
+  }
+  
+  for (let i = 0; i < asteroid2Collisions.length; i++) {
+    lasers.splice(asteroid2Collisions[i].laserIndex, 1);
+    asteroids2.splice(asteroid2Collisions[i].asteroid2Index, 1);
+  }
+  
+  // Kollisionen von Asteroiden mit dem Raumschiff22222 
+  let spaceshipPolygon = getSpaceshipPolygon();
+ 
+  for (let i = 0; i < asteroids2.length && !gameOver; i++) {
+    if (collideCirclePoly(
+      asteroids2[i].x, 
+      asteroids2[i].y, 
+      asteroids2[i].size, spaceshipPolygon)) {
+      gameOver = true;
+    }
+  }
+}
+
+// Asteoriden333 /////////////
+function drawAsteroids3() {
+  // neue Asteroiden generieren
+  if (frameCount % 1567 === 0) {
+    asteroids3.push({ x: random(0, width), y: 0, size: 50 });
+  }
+  
+  // Asteroiden zeichnen
+  for (let i = 0; i < asteroids3.length; i++) {
+    push();
+    translate(asteroids3[i].x, asteroids3[i].y)
+    rotate(rota+0.02);
+    image(asteroidImg3, asteroids3[i].size / -2, asteroids3[i].size / -2, asteroids3[i].size, asteroids3[i].size);
+    pop();
+    
+    asteroids3[i].y += speed;;
+    asteroids3[i].size += 0.05;
+   
+    if (asteroids3[i].y > height + 30) {
+      gameOver = true;
+    }
+  }
+}
+
+// Kollisionen3333 //////////
+function detectCollisions3() {
+  // Kollisionen von Asteroiden mit Lasern
+  let asteroid3Collisions = [];
+  
+  for (let l = 0; l < lasers.length; l++) {
+    for (let a = 0; a < asteroids3.length; a++) {
+      if (collideRectCircle(
+            lasers[l].x - 2, 
+            lasers[l].y - 20, 
+            4, 
+            20, 
+            asteroids3[a].x, 
+            asteroids3[a].y, 
+            asteroids3[a].size)) {
+          asteroid3Collisions.push({ laserIndex: l, asteroid3Index: a });
+          explosions.push({ x: lasers[l].x, y: lasers[l].y, duration: 0 });
+
+          score = score + 30000;
+      }
+    }
+  }
+  
+  for (let i = 0; i < asteroid3Collisions.length; i++) {
+    lasers.splice(asteroid3Collisions[i].laserIndex, 1);
+    asteroids3.splice(asteroid3Collisions[i].asteroid3Index, 1);
+  }
+  
+  // Kollisionen von Asteroiden mit dem Raumschiff3333 
+  let spaceshipPolygon = getSpaceshipPolygon();
+ 
+  for (let i = 0; i < asteroids3.length && !gameOver; i++) {
+    if (collideCirclePoly(
+      asteroids3[i].x, 
+      asteroids3[i].y, 
+      asteroids3[i].size, spaceshipPolygon)) {
+      gameOver = true;
+    }
+  }
+}
+
+// Asteoriden44444 /////////////
+function drawAsteroids4() {
+  // neue Asteroiden generieren
+  if (frameCount % 1000 === 0) {
+    asteroids4.push({ x: random(0, width), y: 0, size: 50 });
+  }
+  
+  // Asteroiden zeichnen
+  for (let i = 0; i < asteroids4.length; i++) {
+    push();
+    translate(asteroids4[i].x, asteroids4[i].y)
+    rotate(rota);
+    image(asteroidImg4, asteroids4[i].size / -2, asteroids4[i].size / -2, asteroids4[i].size, asteroids4[i].size);
+    pop();
+    
+    asteroids4[i].y += speed;;
+    asteroids4[i].size += 0.05;
+   
+    if (asteroids4[i].y > height + 30) {
+      gameOver = true;
+    }
+  }
+}
+
+// Kollisionen44444 //////////
+function detectCollisions4() {
+  // Kollisionen von Asteroiden mit Lasern
+  let asteroid4Collisions = [];
+  
+  for (let l = 0; l < lasers.length; l++) {
+    for (let a = 0; a < asteroids4.length; a++) {
+      if (collideRectCircle(
+            lasers[l].x - 2, 
+            lasers[l].y - 20, 
+            4, 
+            20, 
+            asteroids4[a].x, 
+            asteroids4[a].y, 
+            asteroids4[a].size)) {
+          asteroid4Collisions.push({ laserIndex: l, asteroid4Index: a });
+          explosions.push({ x: lasers[l].x, y: lasers[l].y, duration: 0 });
+
+          score = score + 1000;
+      }
+    }
+  }
+  
+  for (let i = 0; i < asteroid4Collisions.length; i++) {
+    lasers.splice(asteroid4Collisions[i].laserIndex, 1);
+    asteroids4.splice(asteroid4Collisions[i].asteroid4Index, 1);
+  }
+  
+  // Kollisionen von Asteroiden mit dem Raumschiff4444
+  let spaceshipPolygon = getSpaceshipPolygon();
+ 
+  for (let i = 0; i < asteroids4.length && !gameOver; i++) {
+    if (collideCirclePoly(
+      asteroids4[i].x, 
+      asteroids4[i].y, 
+      asteroids4[i].size, spaceshipPolygon)) {
+      gameOver = true;
+    }
+  }
+}
+
+// Asteoriden5555 /////////////
+function drawAsteroids5() {
+  // neue Asteroiden generieren
+  if (frameCount % 2009 === 0) {
+    asteroids5.push({ x: random(0, width), y: 0, size: 50 });
+  }
+  
+  // Asteroiden zeichnen
+  for (let i = 0; i < asteroids5.length; i++) {
+    push();
+    translate(asteroids5[i].x, asteroids5[i].y)
+    rotate(rota);
+    image(asteroidImg5, asteroids5[i].size / -2, asteroids5[i].size / -2, asteroids5[i].size, asteroids5[i].size);
+    pop();
+    
+    asteroids5[i].y += speed;;
+    asteroids5[i].size += 0.05;
+   
+    if (asteroids5[i].y > height + 30) {
+      gameOver = true;
+    }
+  }
+}
+
+// Kollisionen55555 //////////
+function detectCollisions5() {
+  // Kollisionen von Asteroiden mit Lasern
+  let asteroid5Collisions = [];
+  
+  for (let l = 0; l < lasers.length; l++) {
+    for (let a = 0; a < asteroids5.length; a++) {
+      if (collideRectCircle(
+            lasers[l].x - 2, 
+            lasers[l].y - 20, 
+            4, 
+            20, 
+            asteroids5[a].x, 
+            asteroids5[a].y, 
+            asteroids5[a].size)) {
+          asteroid5Collisions.push({ laserIndex: l, asteroid5Index: a });
+          explosions.push({ x: lasers[l].x, y: lasers[l].y, duration: 0 });
+
+          speed = speed + 0.3;
+      }
+    }
+  }
+  
+  for (let i = 0; i < asteroid5Collisions.length; i++) {
+    lasers.splice(asteroid5Collisions[i].laserIndex, 1);
+    asteroids5.splice(asteroid5Collisions[i].asteroid5Index, 1);
+  }
+  
+  // Kollisionen von Asteroiden mit dem Raumschiff55555
+  let spaceshipPolygon = getSpaceshipPolygon();
+ 
+  for (let i = 0; i < asteroids5.length && !gameOver; i++) {
+    if (collideCirclePoly(
+      asteroids5[i].x, 
+      asteroids5[i].y, 
+      asteroids5[i].size, spaceshipPolygon)) {
+      gameOver = true;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+// Spaceship
+function drawSpaceship() {
+  // links und rechts bewegen
+  if (keyIsDown(LEFT_ARROW) && spaceshipX >= 2) {
+    spaceshipX -= 6;
+  } else if (keyIsDown(RIGHT_ARROW) && spaceshipX <= width - 2) {
+    spaceshipX += 6;
+  }
+  
+  // rotieren
+  if (keyIsDown(81)) {
+    rotation -= 0.05;
+  } else if (keyIsDown(69)) {
+    rotation += 0.05;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 function getSpaceshipPolygon() {
   let spaceshipPolygon = [];
   addPointToPolygon(spaceshipPolygon, 0, -50);
@@ -211,6 +526,17 @@ function getSpaceshipPolygon() {
   return spaceshipPolygon;
 }
 
+
+
+
+
+
+
+
+
+
+
+
 function addPointToPolygon(polygon, x, y) {
   push();
   tf = new Transformer();
@@ -219,6 +545,20 @@ function addPointToPolygon(polygon, x, y) {
   polygon.push(createVector(spaceshipX + tf.x, spaceshipY + tf.y));
   pop();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Explosionen
 function drawExplosions() {
@@ -235,6 +575,22 @@ function drawExplosions() {
   
   explosions = explosions.filter(e => e.duration / 3 <= 9);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Sterne
 function drawStars() {
