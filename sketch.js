@@ -16,7 +16,7 @@ const asteroids4 = [];
 const asteroids5 = [];
 
 // Geschwindigkeit asteroids
-let speed = 0.7;
+let speedy = 0.7;
 let rota = 0;
 
 // Liste der abgefeuerten Laser
@@ -67,11 +67,17 @@ function draw() {
 
   rota = rota + 0.02;
 
-  
+if (gameOver == false && score > 0) {
   fill(255, 0, 50);
   textSize(20);
   text('Score:', 30, 30);
   text(score, 95, 30)
+} else if (gameOver == true) {
+  fill(255, 0, 50);
+  textSize(20);
+  text('Score:', width/2, height/2 +170);
+  text(score, width/2, height/2 + 200)
+}
 
 if (score == 0) {
   fill(255, 0, 50);
@@ -193,7 +199,7 @@ function drawAsteroids() {
     image(asteroidImg1, asteroids[i].size / -2, asteroids[i].size / -2, asteroids[i].size, asteroids[i].size);
     pop();
     
-    asteroids[i].y += speed;
+    asteroids[i].y += speedy;
     asteroids[i].size += 0.05;
 
     if (asteroids[i].y > height + 30) {
@@ -239,8 +245,8 @@ function detectCollisions() {
       asteroids[i].x, 
       asteroids[i].y, 
       asteroids[i].size, spaceshipPolygon)) {
-      score = score + 30000000000
       
+      gameOver = true;
     }
   }
 }
@@ -260,7 +266,7 @@ function drawAsteroids2() {
     image(asteroidImg2, asteroids2[i].size / -2, asteroids2[i].size / -2, asteroids2[i].size, asteroids2[i].size);
     pop();
     
-    asteroids2[i].y += speed;;
+    asteroids2[i].y += speedy;
     asteroids2[i].size += 0.05;
    
     if (asteroids2[i].y > height + 30) {
@@ -325,7 +331,7 @@ function drawAsteroids3() {
     image(asteroidImg3, asteroids3[i].size / -2, asteroids3[i].size / -2, asteroids3[i].size, asteroids3[i].size);
     pop();
     
-    asteroids3[i].y += speed;;
+    asteroids3[i].y += speedy;
     asteroids3[i].size += 0.05;
    
     if (asteroids3[i].y > height + 30) {
@@ -390,7 +396,7 @@ function drawAsteroids4() {
     image(asteroidImg4, asteroids4[i].size / -2, asteroids4[i].size / -2, asteroids4[i].size, asteroids4[i].size);
     pop();
     
-    asteroids4[i].y += speed;;
+    asteroids4[i].y += speedy;
     asteroids4[i].size += 0.05;
    
     if (asteroids4[i].y > height + 30) {
@@ -455,7 +461,7 @@ function drawAsteroids5() {
     image(asteroidImg5, asteroids5[i].size / -2, asteroids5[i].size / -2, asteroids5[i].size, asteroids5[i].size);
     pop();
     
-    asteroids5[i].y += speed;;
+    asteroids5[i].y += speedy;
     asteroids5[i].size += 0.05;
    
     if (asteroids5[i].y > height + 30) {
@@ -482,7 +488,7 @@ function detectCollisions5() {
           asteroid5Collisions.push({ laserIndex: l, asteroid5Index: a });
           explosions.push({ x: lasers[l].x, y: lasers[l].y, duration: 0 });
 
-          speed = speed + 0.3;
+          speedy = speedy + 0.3;
       }
     }
   }
