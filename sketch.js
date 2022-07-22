@@ -62,19 +62,45 @@ function setup() {
 }
 
 function draw() {
-  background(20,20,30);   
+  background(20,20,30);  
+  frameRate(60); 
 
   rota = rota + 0.02;
+
+  
   fill(255, 0, 50);
   textSize(20);
   text('Score:', 30, 30);
   text(score, 95, 30)
 
+if (score == 0) {
+  fill(255, 0, 50);
+  textSize(30);
+  text('You are a Trash Collector', (width/2) - 170, (height/2) - 200 );
+  text('--', (width/2) - 20, (height/2) - 150);
+  text('Get rid of all the Trash in Space!', (width/2) - 220, (height/2) - 100 );
+  textSize(20);
+  text('Spacebar = Shoot', (width) - 220, (height) - 200 );
+  text('Left Arrow = Go Left', (width) - 220, (height) - 150 );
+  text('Right Arrow = Go Right', (width) - 220, (height) - 125 );
+  text('E = Rotate Right', (width) - 220, (height) - 50   );
+  text('Q = Rotate Left', (width) - 220, (height) - 75 );
+}
+
+
+
+
+
+
   if (gameOver) {
+    
     textSize(40);
     textAlign(CENTER, CENTER)
     fill(255, 0, 50);
-    text('GAME OVER', width / 2, height / 2);
+    text('GAME OVER', width / 2, (height / 2) - 50);
+    textSize(20);
+    text('press "F5" to try again', width / 2, (height / 2 ) + 50);
+    
     return;
   }
   
@@ -213,7 +239,8 @@ function detectCollisions() {
       asteroids[i].x, 
       asteroids[i].y, 
       asteroids[i].size, spaceshipPolygon)) {
-      gameOver = true;
+      score = score + 30000000000
+      
     }
   }
 }
@@ -473,6 +500,7 @@ function detectCollisions5() {
       asteroids5[i].x, 
       asteroids5[i].y, 
       asteroids5[i].size, spaceshipPolygon)) {
+      
       gameOver = true;
     }
   }
