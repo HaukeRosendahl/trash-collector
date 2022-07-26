@@ -1,3 +1,6 @@
+let windowsI = 0;
+let windowsF = 0;
+
 // x Position vom Raumschiff
 let spaceshipX = innerWidth / 2;
 // y Position vom Raumschiff
@@ -14,10 +17,16 @@ const asteroids2 = []; ////////
 const asteroids3 = [];
 const asteroids4 = [];
 const asteroids5 = [];
+const asteroids6 = [];
+const asteroids7 = [];
+const asteroids8 = [];
+const asteroids9 = [];
 
 // Geschwindigkeit asteroids
-let speedy = 0.7;
+let speedy = 0.5;
 let rota = 0;
+
+let spacespeed = 6;
 
 // Liste der abgefeuerten Laser
 let lasers = [];
@@ -32,6 +41,12 @@ let asteroidImg2; /////////
 let asteroidImg3;
 let asteroidImg4;
 let asteroidImg5;
+let asteroidImg6;
+let asteroidImg7;
+let asteroidImg8;
+let asteroidImg9;
+let windowsImg;
+let windowsImg2;
 let laserImg;
 const shotImg = [];
 const explosionImg = [];
@@ -50,7 +65,13 @@ function preload() {
   asteroidImg3 = loadImage('asteroid3.png'); //////////
   asteroidImg4 = loadImage('asteroid4.png');
   asteroidImg5 = loadImage('asteroid5.png');
-  
+  asteroidImg6 = loadImage('asteroid6.png');
+  asteroidImg7 = loadImage('asteroid7.png');
+  asteroidImg8 = loadImage('asteroid8.png');
+  asteroidImg9 = loadImage('asteroid9.png');
+  windowsImg = loadImage('windows.png');
+  windowsImg2 = loadImage('windows2.png');
+
   for (let i = 1; i <= 10; i++) {
     explosionImg.push(loadImage('shot6_exp' + i.toString() + '.png')); 
   }
@@ -75,11 +96,11 @@ if (gameOver == false && score > 0) {
 } else if (gameOver == true) {
   fill(255, 0, 50);
   textSize(20);
-  text('Score:', width/2, height/2 +170);
-  text(score, width/2, height/2 + 200)
+  text('Score:', width/2, height/2 +140);
+  text(score, width/2, height/2 + 170)
 }
 
-if (score == 0) {
+if (score == 0 && gameOver == false) {
   fill(255, 0, 50);
   textSize(30);
   text('You are a Trash Collector', (width/2) - 170, (height/2) - 200 );
@@ -103,9 +124,13 @@ if (score == 0) {
     textSize(40);
     textAlign(CENTER, CENTER)
     fill(255, 0, 50);
-    text('GAME OVER', width / 2, (height / 2) - 50);
+    text('GAME OVER', width / 2, (height / 2) - 100);
     textSize(20);
-    text('press "F5" to try again', width / 2, (height / 2 ) + 50);
+    text('press "F5" to try again', width / 2, (height / 2 ) + 0);
+    fill(150);
+    textSize(15);
+    text('Tip:    1.Dont shoot the CEOs, Rescue them! (Get hit by them)    2.Dont shoot the HAWK, its not trash! (Dont hit it either though)', width / 2, (height / 2 ) + 420);
+
     
     return;
   }
@@ -116,6 +141,10 @@ if (score == 0) {
   drawAsteroids3();
   drawAsteroids4();
   drawAsteroids5();
+  drawAsteroids6();
+  drawAsteroids7();
+  drawAsteroids8();
+  drawAsteroids9();
   drawLasers();
   drawSpaceship(); 
   drawExplosions();
@@ -126,6 +155,10 @@ if (score == 0) {
   detectCollisions3();
   detectCollisions4();
   detectCollisions5();
+  detectCollisions6();
+  detectCollisions7();
+  detectCollisions8();
+  detectCollisions9();
 
   // draw Spaceship
   push();
@@ -143,7 +176,16 @@ if (score == 0) {
   pop();
   //
   
-  
+  if (windowsI == 1) {
+    image(windowsImg, width/2 - 400, height/ 2 - 500);
+
+    if (mouseIsPressed == true) {
+      windowsF = windowsF + 1;
+    }
+  }
+  if (windowsF >= 1) {
+    image(windowsImg2, 0, 0, width, height);
+  }
 }
 
 
@@ -311,6 +353,8 @@ function detectCollisions2() {
       asteroids2[i].x, 
       asteroids2[i].y, 
       asteroids2[i].size, spaceshipPolygon)) {
+
+
       gameOver = true;
     }
   }
@@ -512,9 +556,299 @@ function detectCollisions5() {
   }
 }
 
+// Asteoriden6666 /////////////
+function drawAsteroids6() {
+  // neue Asteroiden generieren
+  if (frameCount % 2600 === 0) {
+    asteroids6.push({ x: random(0, width), y: 0, size: 50 });
+  }
+  
+  // Asteroiden zeichnen
+  for (let i = 0; i < asteroids6.length; i++) {
+    push();
+    translate(asteroids6[i].x, asteroids6[i].y)
+    rotate(rota - 0.2);
+    image(asteroidImg6, asteroids6[i].size / -2, asteroids6[i].size / -2, asteroids6[i].size, asteroids6[i].size);
+    pop();
+    
+    asteroids6[i].y += speedy;
+    asteroids6[i].size += 0.05;
+   
+    if (asteroids6[i].y > height + 30) {
+      gameOver = true;
+    }
+  }
+}
+
+// Kollisionen6666 //////////
+function detectCollisions6() {
+  // Kollisionen von Asteroiden mit Lasern
+  let asteroid6Collisions = [];
+  
+  for (let l = 0; l < lasers.length; l++) {
+    for (let a = 0; a < asteroids6.length; a++) {
+      if (collideRectCircle(
+            lasers[l].x - 2, 
+            lasers[l].y - 20, 
+            4, 
+            20, 
+            asteroids6[a].x, 
+            asteroids6[a].y, 
+            asteroids6[a].size)) {
+          asteroid6Collisions.push({ laserIndex: l, asteroid6Index: a });
+          explosions.push({ x: lasers[l].x, y: lasers[l].y, duration: 0 });
+
+          score = score + 1;
+      }
+    }
+  }
+  
+  for (let i = 0; i < asteroid6Collisions.length; i++) {
+    lasers.splice(asteroid6Collisions[i].laserIndex, 1);
+    asteroids6.splice(asteroid6Collisions[i].asteroid6Index, 1);
+  }
+  
+  // Kollisionen von Asteroiden mit dem Raumschiff6666 
+  let spaceshipPolygon = getSpaceshipPolygon();
+ 
+  for (let i = 0; i < asteroids6.length && !gameOver; i++) {
+    for (let a = 0; a < asteroids6.length; a++) {
+    if (collideCirclePoly(
+      asteroids6[i].x, 
+      asteroids6[i].y, 
+      asteroids6[i].size, spaceshipPolygon)) {
+        asteroid6Collisions.push({asteroid6Index: a });
+        for (let i = 0; i < asteroid6Collisions.length; i++) {
+          
+          asteroids6.splice(asteroid6Collisions[i].asteroid6Index, 1);
+        }
+
+        score = score + 148100000000
 
 
+      
+      }
+    }
+  }
+}
 
+// Asteoriden7 /////////////
+function drawAsteroids7() {
+  // neue Asteroiden generieren
+  if (frameCount % 3802 === 0) {
+    asteroids7.push({ x: random(0, width), y: 0, size: 50 });
+  }
+  
+  // Asteroiden zeichnen
+  for (let i = 0; i < asteroids7.length; i++) {
+    push();
+    translate(asteroids7[i].x, asteroids7[i].y)
+    rotate(rota - 0.2);
+    image(asteroidImg7, asteroids7[i].size / -2, asteroids7[i].size / -2, asteroids7[i].size, asteroids7[i].size);
+    pop();
+    
+    asteroids7[i].y += speedy;
+    asteroids7[i].size += 0.05;
+   
+    if (asteroids7[i].y > height + 30) {
+      gameOver = true;
+    }
+  }
+}
+
+// Kollisionen7 //////////
+function detectCollisions7() {
+  // Kollisionen von Asteroiden mit Lasern
+  let asteroid7Collisions = [];
+  
+  for (let l = 0; l < lasers.length; l++) {
+    for (let a = 0; a < asteroids7.length; a++) {
+      if (collideRectCircle(
+            lasers[l].x - 2, 
+            lasers[l].y - 20, 
+            4, 
+            20, 
+            asteroids7[a].x, 
+            asteroids7[a].y, 
+            asteroids7[a].size)) {
+          asteroid7Collisions.push({ laserIndex: l, asteroid7Index: a });
+          explosions.push({ x: lasers[l].x, y: lasers[l].y, duration: 0 });
+
+          score = score + 1;
+      }
+    }
+  }
+  
+  for (let i = 0; i < asteroid7Collisions.length; i++) {
+    lasers.splice(asteroid7Collisions[i].laserIndex, 1);
+    asteroids7.splice(asteroid7Collisions[i].asteroid7Index, 1);
+  }
+  
+  // Kollisionen von Asteroiden mit dem Raumschiff7
+  let spaceshipPolygon = getSpaceshipPolygon();
+ 
+  for (let i = 0; i < asteroids7.length && !gameOver; i++) {
+    for (let a = 0; a < asteroids7.length; a++) {
+    if (collideCirclePoly(
+      asteroids7[i].x, 
+      asteroids7[i].y, 
+      asteroids7[i].size, spaceshipPolygon)) {
+        asteroid7Collisions.push({asteroid7Index: a });
+        for (let i = 0; i < asteroid7Collisions.length; i++) {
+          
+          asteroids7.splice(asteroid7Collisions[i].asteroid7Index, 1);
+        }
+
+        spacespeed = spacespeed + 1
+
+
+      
+      }
+    }
+  }
+}
+
+// Asteoriden8 /////////////
+function drawAsteroids8() {
+  // neue Asteroiden generieren
+  if (frameCount % 4564 === 0) {
+    asteroids8.push({ x: random(0, width), y: 0, size: 50 });
+  }
+  
+  // Asteroiden zeichnen
+  for (let i = 0; i < asteroids8.length; i++) {
+    push();
+    translate(asteroids8[i].x, asteroids8[i].y)
+    rotate(rota);
+    image(asteroidImg8, asteroids8[i].size / -2, asteroids8[i].size / -2, asteroids8[i].size, asteroids8[i].size);
+    pop();
+    
+    asteroids8[i].y += speedy;
+    asteroids8[i].size += 0.05;
+   
+    if (asteroids8[i].y > height + 30) {
+      
+    }
+  }
+}
+
+// Kollisionen8 //////////
+function detectCollisions8() {
+  // Kollisionen von Asteroiden mit Lasern
+  let asteroid8Collisions = [];
+  
+  for (let l = 0; l < lasers.length; l++) {
+    for (let a = 0; a < asteroids8.length; a++) {
+      if (collideRectCircle(
+            lasers[l].x - 2, 
+            lasers[l].y - 20, 
+            4, 
+            20, 
+            asteroids8[a].x, 
+            asteroids8[a].y, 
+            asteroids8[a].size)) {
+          asteroid8Collisions.push({ laserIndex: l, asteroid8Index: a });
+          explosions.push({ x: lasers[l].x, y: lasers[l].y, duration: 0 });
+
+          score = score - 60000;
+      }
+    }
+  }
+  
+  for (let i = 0; i < asteroid8Collisions.length; i++) {
+    lasers.splice(asteroid8Collisions[i].laserIndex, 1);
+    asteroids8.splice(asteroid8Collisions[i].asteroid8Index, 1);
+  }
+  
+  // Kollisionen von Asteroiden mit dem Raumschiff8
+  let spaceshipPolygon = getSpaceshipPolygon();
+ 
+  for (let i = 0; i < asteroids8.length && !gameOver; i++) {
+    if (collideCirclePoly(
+      asteroids8[i].x, 
+      asteroids8[i].y, 
+      asteroids8[i].size, spaceshipPolygon)) {
+      gameOver = true;
+    }
+  }
+}
+
+// Asteoriden9 /////////////
+function drawAsteroids9() {
+  // neue Asteroiden generieren
+  if (frameCount % 5327 === 0) {
+    asteroids9.push({ x: random(0, width), y: 0, size: 50 });
+  }
+  
+  // Asteroiden zeichnen
+  for (let i = 0; i < asteroids9.length; i++) {
+    push();
+    translate(asteroids9[i].x, asteroids9[i].y)
+    rotate(rota - 0.2);
+    image(asteroidImg9, asteroids9[i].size / -2, asteroids9[i].size / -2, asteroids9[i].size, asteroids9[i].size);
+    pop();
+    
+    asteroids9[i].y += speedy;
+    asteroids9[i].size += 0.05;
+   
+    if (asteroids9[i].y > height + 30) {
+      gameOver = true;
+    }
+  }
+}
+
+// Kollisionen9 //////////
+function detectCollisions9() {
+  // Kollisionen von Asteroiden mit Lasern
+  let asteroid9Collisions = [];
+  
+  for (let l = 0; l < lasers.length; l++) {
+    for (let a = 0; a < asteroids9.length; a++) {
+      if (collideRectCircle(
+            lasers[l].x - 2, 
+            lasers[l].y - 20, 
+            4, 
+            20, 
+            asteroids9[a].x, 
+            asteroids9[a].y, 
+            asteroids9[a].size)) {
+          asteroid9Collisions.push({ laserIndex: l, asteroid9Index: a });
+          explosions.push({ x: lasers[l].x, y: lasers[l].y, duration: 0 });
+
+          score = score + 1;
+      }
+    }
+  }
+  
+  for (let i = 0; i < asteroid9Collisions.length; i++) {
+    lasers.splice(asteroid9Collisions[i].laserIndex, 1);
+    asteroids9.splice(asteroid9Collisions[i].asteroid9Index, 1);
+  }
+  
+  // Kollisionen von Asteroiden mit dem Raumschiff9
+  let spaceshipPolygon = getSpaceshipPolygon();
+ 
+  for (let i = 0; i < asteroids9.length && !gameOver; i++) {
+    for (let a = 0; a < asteroids9.length; a++) {
+    if (collideCirclePoly(
+      asteroids9[i].x, 
+      asteroids9[i].y, 
+      asteroids9[i].size, spaceshipPolygon)) {
+        asteroid9Collisions.push({asteroid9Index: a });
+        for (let i = 0; i < asteroid9Collisions.length; i++) {
+          
+          asteroids9.splice(asteroid9Collisions[i].asteroid9Index, 1);
+        }
+
+        ////zeug
+        windowsI = 1
+        
+
+      
+      }
+    }
+  }
+}
 
 
 
@@ -524,9 +858,9 @@ function detectCollisions5() {
 function drawSpaceship() {
   // links und rechts bewegen
   if (keyIsDown(LEFT_ARROW) && spaceshipX >= 2) {
-    spaceshipX -= 6;
+    spaceshipX -= spacespeed;
   } else if (keyIsDown(RIGHT_ARROW) && spaceshipX <= width - 2) {
-    spaceshipX += 6;
+    spaceshipX += spacespeed;
   }
   
   // rotieren
